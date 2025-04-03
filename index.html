@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Builder</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>AI-Powered Resume Builder</h1>
+        <form id="resumeForm">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+            
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" required>
+            
+            <label for="profilePic">Upload Profile Picture:</label>
+            <input type="file" id="profilePic" accept="image/*">
+            
+            <label for="summary">Professional Summary:</label>
+            <textarea id="summary" required></textarea>
+            
+            <label for="experience">Work Experience:</label>
+            <textarea id="experience" required></textarea>
+            
+            <label for="education">Education:</label>
+            <textarea id="education" required></textarea>
+            
+            <label for="skills">Skills:</label>
+            <textarea id="skills" required></textarea>
+            
+            <label for="template">Choose Template:</label>
+            <select id="template">
+                <option value="modern">Modern</option>
+                <option value="classic">Classic</option>
+                <option value="minimalist">Minimalist</option>
+            </select>
+            
+            <label for="color">Choose Theme Color:</label>
+            <input type="color" id="color" value="#000000">
+            
+            <button type="submit">Generate Resume</button>
+        </form>
+
+        <div id="resumeOutput" class="resume"></div>
+        <button id="downloadPDF" style="display:none;">Download as PDF</button>
+
+        <footer>
+            <p>Developed by <strong>Richard Makori - Software Engineer</strong></p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById("resumeForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const summary = document.getElementById("summary").value;
+            const experience = document.getElementById("experience").value;
+            const education = document.getElementById("education").value;
+            const skills = document.getElementById("skills").value;
+            const template = document.getElementById("template").value;
+            const color = document.getElementById("color").value;
+            const profilePic = document.getElementById("profilePic").files[0];
+
+            let profilePicHTML = "";
+            if (profilePic) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePicHTML = `<img src="${e.target.result}" alt="Profile Picture" style="width:100px; border-radius:50%;">`;
+                    generateResume(profilePicHTML);
+                };
+                reader.readAsDataURL(profilePic);
+            } else {
+                generateResume("");
+            }
+        });
+
+        function generateResume(profilePicHTML) {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+            const summary = document.getElementById("summary").value;
+            const experience = document.getElementById("experience").value;
+            const education = document.getElementById("education").value;
+            const skills = document.getElementById("skills").value;
+            const template = document.getElementById("template").value;
+            const color = document.getElementById("color").value;
+            
+            const resumeHTML = `
+                <div style="border:2px solid ${color}; padding:20px; border-radius:10px;">
+                    ${profilePicHTML}
+                    <h2 style="color:${color};">${name}</h2>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Phone:</strong> ${phone}</p>
+                    <h3>Professional Summary</h3>
+                    <p>${summary}</p>
+                    <h3>Work Experience</h3>
+                    <p>${experience}</p>
+                    <h3>Education</h3>
+                    <p>${education}</p>
+                    <h3>Skills</h3>
+                    <p>${skills}</p>
+                </div>
+            `;
+            
+            document.getElementById("resumeOutput").innerHTML = resumeHTML;
+            document.getElementById("downloadPDF").style.display = "block";
+        }
+        
+        document.getElementById("downloadPDF").addEventListener("click", function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.text(document.getElementById("resumeOutput").innerText, 10, 10);
+            doc.save("resume.pdf");
+        });
+    </script>
+</body>
+</html>
