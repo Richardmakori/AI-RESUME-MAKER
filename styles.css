@@ -78,7 +78,7 @@ button:hover {
     border: 3px solid #00AEEF;
 }
 
-/* Responsive Design */
+
 @media (max-width: 600px) {
     .container {
         width: 95%;
